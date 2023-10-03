@@ -13,7 +13,7 @@ delta = {
 }
 def check_bound(obj_rct: pg.Rect):
     """
-    引数:こうかとんRectかばくだんRect
+    引数:こうかとんばくだんRect
     戻り値：タプル（横方向判定結果、縦方向判定結果）
     画面内ならTrue、画面外ならFalse
     """
@@ -42,8 +42,12 @@ def main():
     random_y = random.randint(0,HEIGHT)
     bd_rct.center = (random_x,random_y)
     vx,vy = +5, +5
+    bom_level = [0,10,15,20,25,30,35,40,45,50,55]
     clock = pg.time.Clock()
     tmr = 0
+    tmr_reset = 0
+    count = 0
+    rep = 0
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
@@ -53,6 +57,9 @@ def main():
             print("ゲームオーバー")
             return
         
+
+
+
         screen.blit(bg_img,[0,0])
         """こうかとん"""
         key_lst = pg.key.get_pressed()
@@ -66,6 +73,41 @@ def main():
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         screen.blit(kk_img,kk_rct)
         """ばくだん"""
+        if tmr_reset ==99:
+            rep = bd_rct
+        if tmr_reset == 100:
+            rep_1 = bd_rct
+            if rep[0] - rep_1[0] == 1 & rep[1] - rep_1[1] == 1: 
+                if count <= 10:
+                    vx,vy  = +bom_level[count],+bom_level[count]
+                    tmr_reset = 0
+                    count+=1
+                    rep = 0
+                    rep_1 = 0
+            elif rep[0] - rep_1[0] == 1 & rep[1] - rep_1[1] == -1: 
+                if count <= 10:
+                    vx,vy  = +bom_level[count],-bom_level[count]
+                    tmr_reset = 0
+                    count+=1
+                    rep = 0
+                    rep_1 = 0
+            elif rep[0] - rep_1[0] == -1 & rep[1] - rep_1[1] == 1: 
+                if count <= 10:
+                    vx,vy  = -bom_level[count],+bom_level[count]
+                    tmr_reset = 0
+                    count+=1
+                    rep = 0
+                    rep_1 = 0
+            elif rep[0] - rep_1[0] == -1 & rep[1] - rep_1[1] == -1: 
+                if count <= 10:
+                    vx,vy  = -bom_level[count],-bom_level[count]
+                    tmr_reset = 0
+                    rep = 0
+                    rep_1 = 0
+                    count+=1
+            else:
+                pass
+
         bd_rct.move_ip(vx,vy)
         yoko, tate =check_bound(bd_rct)
         if not yoko:
@@ -75,6 +117,7 @@ def main():
         screen.blit(bd_img,bd_rct)
         pg.display.update()
         tmr += 1
+        tmr_reset +=1
         clock.tick(50)
 
 
