@@ -11,6 +11,7 @@ delta = {
     pg.K_LEFT: (-5, 0),
     pg.K_RIGHT: (+5, 0),
 }
+
 def check_bound(obj_rct: pg.Rect):
     """
     引数:こうかとんばくだんRect
@@ -29,6 +30,7 @@ def main():
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     bg_img = pg.image.load("ex02/fig/pg_bg.jpg")
     a0_png = pg.image.load("ex02/fig/0.png")
+    
     """こうかとん"""
     kk_img = pg.image.load("ex02/fig/3.png")
     kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
@@ -36,21 +38,23 @@ def main():
     kk_rct = kk_img.get_rect()
     kk_rct.center = (900,400)
     mode = True
+    
     """ばくだん"""
     bd_img = pg.Surface((20,20))
     bd_img.set_colorkey((0,0,0))
     pg.draw.circle(bd_img,(255,0,0),(10,10),10)
-    bd_rct =bd_img.get_rect()
+    bd_rct = bd_img.get_rect()
     random_x = random.randint(0,WIDTH)
     random_y = random.randint(0,HEIGHT)
     bd_rct.center = (random_x,random_y)
-    vx,vy = +5, +5
+    vx,vy = +5,+5
     bom_level = [0,10,15,20,25,30,35,40,45,50,55]
     clock = pg.time.Clock()
     tmr = 0
     tmr_reset = 0
     count = 0
     rep = 0
+    
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
@@ -58,30 +62,33 @@ def main():
             
         if kk_rct.colliderect(bd_rct):
             mode = False
-
             print("ゲームオーバー")
             return
         
-
-
-
         screen.blit(bg_img,[0,0])
         """こうかとん"""
         key_lst = pg.key.get_pressed()
         sum_mv = [0,0]
+        
         for key ,mv in delta.items():
             if key_lst[key]:
                 sum_mv[0] += mv[0]
                 sum_mv[1] += mv[1]
         kk_rct.move_ip(sum_mv[0],sum_mv[1])
+        
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         screen.blit(kk_img,kk_rct)
+        
         """ばくだん"""
+        #100ごとにリセットされるタイマーtmr_reset
+        #99の時の爆弾の座標を記録
         if tmr_reset ==99:
             rep = bd_rct
         if tmr_reset == 100:
-            rep_1 = bd_rct
+            rep_1 = bd_rct#100の時の爆弾の座標を記録
+            #以下99と100の時を比較し、マイナスに向かっているのかプラスに向かっているのかを確認
+            #if文で判定を行い時間経過に加速時対応した座標内容を実行する。
             if rep[0] - rep_1[0] == 1 & rep[1] - rep_1[1] == 1: 
                 if count <= 10:
                     vx,vy  = +bom_level[count],+bom_level[count]
@@ -125,11 +132,8 @@ def main():
         tmr_reset +=1
         clock.tick(50)
 
-
-
 if __name__ == "__main__":
     pg.init()
     main()
     pg.quit()
     sys.exit()
-
