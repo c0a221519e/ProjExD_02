@@ -28,11 +28,14 @@ def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     bg_img = pg.image.load("ex02/fig/pg_bg.jpg")
+    a0_png = pg.image.load("ex02/fig/0.png")
     """こうかとん"""
     kk_img = pg.image.load("ex02/fig/3.png")
     kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
+    a0_png = pg.transform.rotozoom(a0_png, 0, 2.0)
     kk_rct = kk_img.get_rect()
     kk_rct.center = (900,400)
+    mode = True
     """ばくだん"""
     bd_img = pg.Surface((20,20))
     bd_img.set_colorkey((0,0,0))
@@ -54,6 +57,8 @@ def main():
                 return
             
         if kk_rct.colliderect(bd_rct):
+            mode = False
+
             print("ゲームオーバー")
             return
         
